@@ -1,32 +1,88 @@
-# React + TypeScript + Vite
+# React-useContext-LoginApp
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Reactの `useContext` を使って、ログイン状態とユーザー名を管理する練習用アプリです。
 
-Currently, two official plugins are available:
+## 📌 概要
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+`LoginContext` でログイン状態・ユーザー名・ログイン切り替え処理を管理し、`LoginProvider` を通して子コンポーネントへ共有します。
 
-## React Compiler
+`LoginDisplay` ではログイン状態とユーザー名を表示し、`LoginToggleButton` ではログイン・ログアウトを切り替えます。
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🛠 使用技術
 
-## Expanding the Oxlint configuration
+* React
+* TypeScript
+* useContext
+* useState
+* Tailwind CSS
+* Vite
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+## 📁 ディレクトリ構成
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```text
+src/
+├── components/
+│   ├── LoginDisplay.tsx
+│   └── LoginToggleButton.tsx
+├── contexts/
+│   └── LoginContext.tsx
+├── App.tsx
+├── App.css
+├── index.css
+└── main.tsx
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## 🔍 実装内容
+
+### LoginContext
+
+`createContext` を使用して、ログイン状態・ユーザー名・ログイン切り替え関数を共有します。
+
+```tsx
+const LoginContext = createContext<LoginContextInterface | undefined>(
+  undefined,
+);
+```
+
+### LoginProvider
+
+`isLogin`、`name`、`toggleLogin` をContext経由で子コンポーネントに渡します。
+
+```tsx
+<LoginContext.Provider value={{ name, isLogin, toggleLogin }}>
+  {children}
+</LoginContext.Provider>
+```
+
+### useLogin
+
+`useContext` を利用してContextの値を取得します。
+
+```tsx
+const { name, isLogin } = useLogin();
+```
+
+### ログイン状態の切り替え
+
+`useState` の状態を反転させてログイン・ログアウトを切り替えます。
+
+```tsx
+const toggleLogin = () => {
+  setIsLogin((prev) => !prev);
+};
+```
+
+## 🎯 動作
+
+* 初期状態：ログアウト
+* 「ログイン」ボタンをクリック：ログイン状態になる
+* ログイン時：ユーザー名を表示
+* 「ログアウト」ボタンをクリック：ログアウト状態になる
+* ログアウト時：ユーザー名を非表示
+
+## ▶️ 起動方法
+
+```bash
+npm install
+npm run dev
+```
